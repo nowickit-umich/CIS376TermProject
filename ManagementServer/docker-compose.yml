@@ -1,0 +1,57 @@
+
+services:
+  frontend:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./frontend/dashboard:/app
+    ports:
+      - "3000:3000"
+    command: "npm run dev"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASS=pass
+      - DB_NAME=app_db
+    depends_on:
+      - database
+
+  analysis:
+    image: python:3.11
+    working_dir: /app
+    volumes:
+      - ./analysis:/app
+    command: "python app_analysis.py"  # Assuming this script runs analysis every 15 seconds
+    environment:
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASS=pass
+      - DB_NAME=app_db
+    depends_on:
+      - database
+
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_DATABASE: app_db
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d 
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:

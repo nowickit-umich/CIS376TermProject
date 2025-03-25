@@ -1,0 +1,10 @@
+
+FROM python:3.11
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 5000
+
+# run the flask app when the container starts
+CMD python -m flask --app api.py run --host=0.0.0.0 --port=5000
+#CMD ["flask", "--app", "--host=0.0.0.0", "--port=5000", "api", "run"]
