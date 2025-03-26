@@ -2,3 +2,7 @@ Start all services:
 
 docker-compose up --build
 
+Frontend Dashboard: 127.0.0.1:3000 
+
+Backend API: 127.0.0.1:5000
+
