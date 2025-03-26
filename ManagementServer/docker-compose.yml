@@ -33,7 +33,7 @@ services:
       - ./analysis:/app
     command: "python app_analysis.py"  # Assuming this script runs analysis every 15 seconds
     environment:
-      - DB_HOST=db
+      - DB_HOST=database
       - DB_USER=user
       - DB_PASS=pass
       - DB_NAME=app_db
