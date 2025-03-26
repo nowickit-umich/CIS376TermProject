@@ -1,6 +1,6 @@
 Start all services:
 
-docker-compose up --build
+  docker-compose up --build
 
 Frontend Dashboard: 127.0.0.1:3000 
 
