@@ -20,7 +20,7 @@ def dbtest():
     try:
         connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM endpoints;")
+            cursor.execute("SELECT * FROM alerts;")
             result = cursor.fetchall()
         return jsonify(result)
     except Exception as e:
