@@ -1,13 +1,8 @@
 
 services:
   frontend:
-    image: node:18
-    working_dir: /app
-    volumes:
-      - ./frontend/dashboard:/app
-    ports:
-      - "3000:3000"
-    command: "npm run dev"
+    build:
+      context: ./frontend
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:5000
     depends_on:
@@ -27,11 +22,8 @@ services:
       - database
 
   analysis:
-    image: python:3.11
-    working_dir: /app
-    volumes:
-      - ./analysis:/app
-    command: "python app_analysis.py"  # Assuming this script runs analysis every 15 seconds
+    build:
+      context: ./analysis
     environment:
       - DB_HOST=database
       - DB_USER=user
