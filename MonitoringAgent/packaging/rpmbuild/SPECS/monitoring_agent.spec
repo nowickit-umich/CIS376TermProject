@@ -4,8 +4,8 @@ Version: 1.0
 Release: 1
 Summary: System Monitoring Agent
 License: GPL
-Source0: %{name}-%{version}.tar.gz
-BuildArch: noarch
+Source0: ./SOURCES/
+BuildArch: x86_64
 
 Requires: systemd auditd
 
