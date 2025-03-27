@@ -3,6 +3,7 @@ import pymysql
 
 app = Flask(__name__)
 
+# TODO move to env
 db_config = {
     "host": "database",
     "user": "user",
