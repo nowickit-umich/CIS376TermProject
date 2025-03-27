@@ -4,17 +4,13 @@ BUILD_DIR=./build
 all: build_rpm build_deb
 
 build_rpm:
-	cp ./src/* $(BUILD_DIR)/rpm/
-	
-	rpmbuild 
+	./packaging/rpmbuild/build.sh
 
 build_deb: 
-	
-	dpgk
+	echo "TODO"
 
 clean:
 	rm -rf $(BUILD_DIR)
 
 
 
-	
