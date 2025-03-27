@@ -11,4 +11,4 @@ Group=monitoring_agent
 WorkingDirectory=/var/lib/monitoring_agent
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target

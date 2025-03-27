@@ -1,9 +1,11 @@
+
 Name: monitoring_agent
 Version: 1.0
 Release: 1
 Summary: System Monitoring Agent
 License: GPL
 Source0: %{name}-%{version}.tar.gz
+BuildArch: noarch
 
 Requires: systemd auditd
 
@@ -17,6 +19,12 @@ Monitors processes and sends logs to management server.
 # TODO
 
 %install
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}/etc/systemd/system
+mkdir -p %{buildroot}/etc/audit/rules.d
+install -m 755 monitoring_agent %{buildroot} %{_bindir}/monitoring_agent
+install -m 644 monitoring_agent.rules %{buildroot}/etc/audit/rules.d/monitoring_agent.rules
+install -m 644 monitoring_agent.service %{buildroot}/etc/systemd/system/monitoring_agent.service
 
 
 %post
@@ -34,4 +42,8 @@ fi
 %systemd_postun_with_restart monitoring_agent.service
 
 %files
-# TODO
+%{_bindir}/monitoring_agent
+/etc/systemd/system/monitoring_agent.service
+/etc/audit/rules.d/monitoring_agent.rules
+
+
