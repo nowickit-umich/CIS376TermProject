@@ -3,5 +3,4 @@ WORKDIR /app
 COPY dashboard/package.json .
 COPY dashboard/package-lock.json .
 RUN npm install  
-EXPOSE 3000
 CMD ["npm", "run", "dev"]

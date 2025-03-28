@@ -1,11 +1,12 @@
 import time
 import pymysql
+import os
 
 db_config = {
     "host": "database",
-    "user": "user",
-    "password": "pass",
-    "database": "app_db"
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASS"),
+    "database": os.getenv("DB_NAME")
 }
 
 # TODO
@@ -17,7 +18,7 @@ def test():
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO alerts (severity) VALUES ('DEBUG');")
             result = cursor.fetchall()
-        print(str(result))
+        connection.commit()
         return
     except Exception as e:
         print(str(e))

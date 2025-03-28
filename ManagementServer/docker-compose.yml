@@ -8,22 +8,24 @@ services:
       - /app/node_modules/
       - /app/.next/
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:5000
+      - NEXT_PUBLIC_API_URL=http://backend:${BACKEND_PORT}
     depends_on:
       - backend
 
   backend:
     build:
       context: ./backend
+      args:
+        BACKEND_PORT: ${BACKEND_PORT}
     ports:
-      - "5001:5001"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
-      - DB_HOST=db
-      - DB_USER=user
-      - DB_PASS=pass
-      - DB_NAME=app_db
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
     depends_on:
       - database
 
@@ -31,25 +33,25 @@ services:
     build:
       context: ./analysis
     environment:
-      - DB_HOST=database
-      - DB_USER=user
-      - DB_PASS=pass
-      - DB_NAME=app_db
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
     depends_on:
       - database
 
   database:
     image: mysql:8
     environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-      MYSQL_DATABASE: app_db
-      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
     volumes:
       - db_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d 
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:${DB_PORT}"
 
 volumes:
   db_data:
