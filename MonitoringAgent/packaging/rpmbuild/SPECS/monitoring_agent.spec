@@ -19,7 +19,7 @@ Monitors processes and sends logs to management server.
 # TODO
 
 %install
-mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}/%{_bindir}
 mkdir -p %{buildroot}/etc/systemd/system
 mkdir -p %{buildroot}/etc/audit/rules.d
 install -m 755 monitoring_agent %{buildroot} %{_bindir}/monitoring_agent
