@@ -8,23 +8,21 @@ Source0: ./SOURCES/
 BuildArch: x86_64
 
 Requires: systemd auditd
+BuildRequires: g++
 
 %description
 Monitors processes and sends logs to management server.
 
-%prep
-%setup -q
-
 %build
-# TODO
+g++ %{buildroot}/SOURCES/monitoring_agent.cpp -o %{buildroot}/SOURCES/monitoring_agent
 
 %install
-mkdir -p %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/etc/systemd/system
-mkdir -p %{buildroot}/etc/audit/rules.d
-install -m 755 monitoring_agent %{buildroot} %{_bindir}/monitoring_agent
-install -m 644 monitoring_agent.rules %{buildroot}/etc/audit/rules.d/monitoring_agent.rules
-install -m 644 monitoring_agent.service %{buildroot}/etc/systemd/system/monitoring_agent.service
+mkdir -p %{buildroot}/BUILD/%{_bindir}
+mkdir -p %{buildroot}/BUILD/etc/systemd/system
+mkdir -p %{buildroot}/BUILD/etc/audit/rules.d
+install -m 755 monitoring_agent %{buildroot}/BUILD/ %{_bindir}/monitoring_agent
+install -m 644 monitoring_agent.rules %{buildroot}/BUILD/etc/audit/rules.d/monitoring_agent.rules
+install -m 644 monitoring_agent.service %{buildroot}/BUILD/etc/systemd/system/monitoring_agent.service
 
 
 %post
