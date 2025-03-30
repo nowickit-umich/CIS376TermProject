@@ -66,7 +66,10 @@ services:
       MYSQL_PASSWORD: pass
       MYSQL_DATABASE: app_db
       MYSQL_ROOT_PASSWORD: rootpass # TODO move to secure env
+<<<<<<< HEAD
 >>>>>>> e4eb3a9 (fixed analysis SQL INSERT example)
+=======
+>>>>>>> 24de235a6e167f012e4938b9592f91413911df21
     volumes:
       - db_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d 

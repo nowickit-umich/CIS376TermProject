@@ -21,7 +21,10 @@ def test():
             result = cursor.fetchall()
         connection.commit()
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 24de235a6e167f012e4938b9592f91413911df21
         print(str(result))
 >>>>>>> e4eb3a9 (fixed analysis SQL INSERT example)
         return
