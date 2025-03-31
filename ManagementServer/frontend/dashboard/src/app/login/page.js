@@ -26,7 +26,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
+      <div className="w-full max-w-xs p-8 bg-white rounded shadow-md"> // changed p-6 to p-8
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -43,7 +43,7 @@ export default function LoginPage() {
               placeholder="you@example.com"
             />
           </div>
-          <div>
+          <div className="mb-6"> {/* Increased the margin between password and the login button */}
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
