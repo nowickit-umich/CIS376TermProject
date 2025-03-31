@@ -13,10 +13,7 @@ CREATE TABLE events (
     event_time TIMESTAMP NOT NULL,
     message TEXT NOT NULL,
     event_type VARCHAR(16),
-    Endpoint_id INT,
-    pid INT,
-    start_time TIMESTAMP,
-    FOREIGN KEY (endpoint_id, pid, start_time) REFERENCES processes(endpoint_id, pid, start_time)
+    pid INT
 );
 
 CREATE TABLE alert_rules (
