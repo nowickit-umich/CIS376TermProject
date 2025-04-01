@@ -1,4 +1,4 @@
-import Sidebar from '@/components/Sidebar';
+import EventDashboard from '@/components/EventDashboard'; // Correct import path
 
 export default function DashboardPage() {
   return (
@@ -6,7 +6,8 @@ export default function DashboardPage() {
       <Sidebar />
       <main className="flex-1 p-8 ml-64">
         <h1 className="text-2xl font-bold mb-4">Dashboard Overview</h1>
+        <EventDashboard /> {/* Render the event dashboard here */}
       </main>
     </div>
   );
-} 
+}
