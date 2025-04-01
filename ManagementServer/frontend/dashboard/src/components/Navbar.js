@@ -1,18 +1,21 @@
+'use client';
+
 import Link from 'next/link';
+import ThemeToggleButton from './ThemeToggleButton';
 
 export default function Navbar() {
   return (
-    <nav className="bg-gray-800 text-white p-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 p-4">
       <div className="container mx-auto flex justify-between items-center">
-        {/* You can add a logo or site title here later */}
         <div className="text-lg font-bold">
-          <Link href="/">MyApp</Link> {/* Link to landing page */}
+          <Link href="/">EndPoint Guard Inc.</Link>
         </div>
-        <div className="space-x-4"> {/* Added space-x-4 for spacing */}
+        <div className="flex items-center space-x-4">
+          <ThemeToggleButton />
           <Link href="/login" className="hover:text-gray-300">
             Login
           </Link>
-          <Link href="/register" className="hover:text-gray-300"> {/* Added Register link */} 
+          <Link href="/register" className="hover:text-gray-300">
             Register
           </Link>
         </div>

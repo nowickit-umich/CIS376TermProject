@@ -3,4 +3,5 @@ WORKDIR /app
 COPY dashboard/package.json .
 COPY dashboard/package-lock.json .
 RUN npm install  
+COPY dashboard/ .
 CMD ["npm", "run", "dev"]

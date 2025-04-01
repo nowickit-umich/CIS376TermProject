@@ -6,32 +6,28 @@ import Link from 'next/link';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // State for error messages
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setError(''); // Clear previous errors
-
-    // Basic validation (can be expanded)
+    e.preventDefault();
     if (!email || !password) {
       setError('Please enter both email and password.');
       return;
     }
-
-    // TODO: Implement actual login logic (e.g., API call)
     console.log('Login attempt with:', { email, password });
-    // If login fails, setError('Invalid credentials.');
-    // If login succeeds, redirect to dashboard (use Next.js router)
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-xs p-8 bg-white rounded shadow-md"> // changed p-6 to p-8
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <main className="auth-page flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-sm p-8 auth-card rounded-xl">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
+          <p className="text-sm opacity-75">Please sign in to your account</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+            <label htmlFor="email" className="block text-sm font-medium mb-2">
+              Email address
             </label>
             <input
               type="email"
@@ -39,12 +35,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+              className="auth-input"
               placeholder="you@example.com"
             />
           </div>
-          <div className="mb-6"> {/* Increased the margin between password and the login button */}
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium mb-2">
               Password
             </label>
             <input
@@ -53,25 +49,16 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
-              placeholder="********"
+              className="auth-input"
+              placeholder="••••••••"
             />
           </div>
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-          >
-            Login
-          </button>
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          <button type="submit" className="auth-button">Sign in</button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account?
-          <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Register here
-          </Link>
+        <p className="mt-6 text-center text-sm">
+          Don't have an account?{' '}
+          <Link href="/register" className="auth-link">Create one now</Link>
         </p>
       </div>
     </main>
