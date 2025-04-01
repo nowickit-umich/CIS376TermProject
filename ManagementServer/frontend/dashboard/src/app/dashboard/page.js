@@ -1,4 +1,4 @@
-import EventDashboard from '@/components/EventDashboard'; // Correct import path
+import EventDashboard from '@/components/EventDashboard';
 
 export default function DashboardPage() {
   return (
