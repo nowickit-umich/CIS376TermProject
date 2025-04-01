@@ -17,7 +17,7 @@ export default function EventDashboard() {
 
   useEffect(() => {
     fetchEvents();
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4000');
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000');
     socket.on('newEvent', (event) => {
       setEvents((prev) => [event, ...prev]);
     });
