@@ -17,7 +17,7 @@ export default function EventDashboard() {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5001/api/test`, {
+        const res = await fetch(`http://localhost:5001/test`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
