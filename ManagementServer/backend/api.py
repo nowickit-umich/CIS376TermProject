@@ -12,7 +12,7 @@ db_config = {
 
 @app.route("/test", methods=['GET'])
 def test():
-    return "This is a test!"
+    return "{\"test\": \"This is a test!\"}"
 
 @app.route("/dbtest", methods=['GET'])
 def dbtest():
