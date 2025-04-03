@@ -1,13 +1,20 @@
 'use client';
 
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
 
 export default function ThemeToggleButton() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check initial theme on client-side
+    setIsDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
   const handleClick = () => {
     document.documentElement.classList.toggle('dark');
+    setIsDark(!isDark);
   };
-
-  const isDark = document.documentElement.classList.contains('dark');
 
   return (
     <button
