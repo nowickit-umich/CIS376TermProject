@@ -1,9 +1,7 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS
 import pymysql
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
 
 # In-memory user storage
 users = {}
@@ -67,6 +65,9 @@ def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+
+    #debug
+    print(data, flush=True)
     
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400

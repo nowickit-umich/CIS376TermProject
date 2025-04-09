@@ -19,7 +19,7 @@ export default function EventDashboard() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:5000/dbtest`, {
+        const res = await fetch('/api/dbtest', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
