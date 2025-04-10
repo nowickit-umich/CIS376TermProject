@@ -6,7 +6,7 @@ export async function POST(req) {
         const body = await req.json();
         
         // Forward to backend with proper credentials
-        const response = await fetch('http://backend:5001/login', {
+        const response = await fetch('http://backend:5001/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,11 +24,11 @@ export async function POST(req) {
             status: response.status 
         });
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Registration error:', error);
         return NextResponse.json({ 
-            error: 'An error occurred during login' 
+            error: 'An error occurred during registration' 
         }, { 
             status: 500 
         });
     }
-}
+} 

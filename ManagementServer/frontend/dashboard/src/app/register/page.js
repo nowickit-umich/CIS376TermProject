@@ -9,21 +9,27 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
     if (!username || !password || !confirmPassword) {
       setError('Please fill in all fields.');
+      setIsLoading(false);
       return;
     }
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
+      setIsLoading(false);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5001/register', {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,6 +41,7 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         setError(data.error || 'Registration failed');
+        setIsLoading(false);
         return;
       }
 
@@ -42,6 +49,7 @@ export default function RegisterPage() {
       router.push('/login');
     } catch (err) {
       setError('An error occurred during registration');
+      setIsLoading(false);
     }
   };
 
@@ -65,6 +73,7 @@ export default function RegisterPage() {
               required
               className="auth-input"
               placeholder="Choose a username"
+              disabled={isLoading}
             />
           </div>
           <div>
@@ -79,6 +88,7 @@ export default function RegisterPage() {
               required
               className="auth-input"
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
           <div>
@@ -93,10 +103,17 @@ export default function RegisterPage() {
               required
               className="auth-input"
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          <button type="submit" className="auth-button">Create account</button>
+          <button 
+            type="submit" 
+            className="auth-button"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Creating account...' : 'Create account'}
+          </button>
         </form>
         <p className="mt-6 text-center text-sm">
           Already have an account?{' '}

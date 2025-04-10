@@ -8,12 +8,17 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
     if (!username || !password) {
       setError('Please enter both username and password.');
+      setIsLoading(false);
       return;
     }
 
@@ -29,14 +34,16 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Login failed');
+        setError(data.error || 'Invalid username or password');
+        setIsLoading(false);
         return;
       }
 
-      // Successful login
+      // Only redirect if login was successful
       router.push('/dashboard');
     } catch (err) {
       setError('An error occurred during login');
+      setIsLoading(false);
     }
   };
 
@@ -60,6 +67,7 @@ export default function LoginPage() {
               required
               className="auth-input"
               placeholder="Enter your username"
+              disabled={isLoading}
             />
           </div>
           <div>
@@ -74,10 +82,17 @@ export default function LoginPage() {
               required
               className="auth-input"
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          <button type="submit" className="auth-button">Sign in</button>
+          <button 
+            type="submit" 
+            className="auth-button"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing in...' : 'Sign in'}
+          </button>
         </form>
         <p className="mt-6 text-center text-sm">
           Don't have an account?{' '}
