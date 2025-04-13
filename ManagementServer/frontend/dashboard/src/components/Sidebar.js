@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaHome, FaCog, FaUser } from 'react-icons/fa';
+import { FaHome, FaCog, FaUser, FaPlus } from 'react-icons/fa';
 
 export default function Sidebar() {
   return (
@@ -11,6 +11,10 @@ export default function Sidebar() {
         <Link href="/dashboard" className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-700 text-gray-200">
           <FaHome />
           <span>Overview</span>
+        </Link>
+        <Link href="/dashboard/add-endpoint" className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-700 text-gray-200">
+          <FaPlus />
+          <span>Add Endpoint</span>
         </Link>
         <Link href="/dashboard/settings" className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-700 text-gray-200">
           <FaCog />
