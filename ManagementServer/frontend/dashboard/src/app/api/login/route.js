@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
@@ -34,7 +33,11 @@ export async function POST(req) {
       sameSite: 'lax',
     });
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    // Forward the requiresCredentialChange field from the backend response
+    return NextResponse.json({ 
+      success: true,
+      requiresCredentialChange: data.requiresCredentialChange 
+    }, { status: 200 });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
