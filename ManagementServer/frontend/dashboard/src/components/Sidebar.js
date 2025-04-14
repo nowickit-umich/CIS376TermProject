@@ -20,10 +20,6 @@ export default function Sidebar() {
           <FaCog />
           <span>Settings</span>
         </Link>
-        <Link href="/dashboard/profile" className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-700 text-gray-200">
-          <FaUser />
-          <span>Profile</span>
-        </Link>
         {/* Add more links as needed */}
       </nav>
     </aside>
