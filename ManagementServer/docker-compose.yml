@@ -2,20 +2,14 @@ services:
   frontend:
     build:
       context: ./frontend
-    volumes:
-      - ./frontend/dashboard:/app
-      - /app/node_modules
+#    volumes:
+#      - ./frontend/dashboard/src:/app
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:${BACKEND_PORT}
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
     depends_on:
       - backend
-    stdin_open: true
-    tty: true
 
   backend:
     build:
