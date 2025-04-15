@@ -5,15 +5,18 @@
 #define ARG_LEN 128
 #define PATH_LEN 256
 
-enum syscalls {
-	EXECVE,
-	OPENAT
+enum syscalls : int {
+	EXECVE   = 0,
+	OPENAT   = 1,
+	SOCKET   = 2,
+	SENDTO    = 3
 };
 
 // structure of events placed into the shared ring buffer
 // needed in both eBPF and userspace logger
 struct event {
-    __u32 pid;
+    uint64_t timestamp;
+	__u32 pid;
     enum syscalls call;
 	__u32 ppid;
     char filename[PATH_LEN];

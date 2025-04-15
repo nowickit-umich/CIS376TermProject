@@ -15,27 +15,116 @@ struct {
     __uint(max_entries, 1 << 24); // 16 MB
 } rb SEC(".maps");
 
+
+/* ************************************************************
+ *	TRACE SYSCALL SENDTO
+ * ************************************************************
+ * */
+// format obtained from /sys/kernel/tracing/events/syscalls/
+struct trace_event_raw_sys_enter_sendto {
+    uint16_t common_type;
+    uint8_t common_flags;
+    uint8_t common_preempt_count;
+    int32_t common_pid;
+
+    int32_t __syscall_nr;
+    int32_t __pad;
+    
+	void* fd;
+    uint64_t buff;  // contains the data to send
+    uint64_t len;   // len of buff
+    uint64_t flags;
+	struct sockaddr* addr;
+    uint64_t addr_len;	
+};
+
+// syscall sendto logger
+SEC("tracepoint/syscalls/sys_enter_sendto")
+int handle_sendto(const struct trace_event_raw_sys_enter_sendto *ctx){
+	struct event *e;
+	
+	// open ring buffer	
+    e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
+    if (!e){
+		return 0;
+	}
+
+	e->timestamp = bpf_ktime_get_ns();	
+	//ignore ppid for this syscall
+	e->ppid = 0;	
+	e->call = SENDTO;	
+    e->pid = bpf_get_current_pid_tgid() >> 32;
+	e->argc = 3;
+	//strcpy(e->argv[0], );
+	//TODO
+
+    bpf_ringbuf_submit(e, 0);
+	return 0;
+}
+
+/* ************************************************************
+ *	TRACE SYSCALL SOCKET
+ * ************************************************************
+ * */
+// format obtained from /sys/kernel/tracing/events/syscalls/
+struct trace_event_raw_sys_enter_socket {
+    uint16_t common_type;
+    uint8_t common_flags;
+    uint8_t common_preempt_count;
+    int32_t common_pid;
+
+    int32_t __syscall_nr;
+    int32_t __pad;
+    
+    uint64_t family;
+    uint64_t type;
+    uint64_t protocol;
+};
+
+// syscall openat logger
+SEC("tracepoint/syscalls/sys_enter_socket")
+int handle_socket(const struct trace_event_raw_sys_enter_socket *ctx){
+	struct event *e;
+	
+	// open ring buffer	
+    e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
+    if (!e){
+		return 0;
+	}
+
+	e->timestamp = bpf_ktime_get_ns();	
+	//ignore ppid for this syscall
+	e->ppid = 0;	
+	e->call = SOCKET;	
+    e->pid = bpf_get_current_pid_tgid() >> 32;
+	e->argc = 3;
+	//TODO
+
+    bpf_ringbuf_submit(e, 0);
+	return 0;
+}
+
 /* ************************************************************
  *	TRACE SYSCALL OPENAT
  * ************************************************************
  * */
 // format obtained from /sys/kernel/tracing/events/syscalls/
 struct trace_event_raw_sys_enter_openat {
-    __u16 common_type;
-    __u8  common_flags;
-    __u8  common_preempt_count;
-    __s32 common_pid;
+    unsigned short common_type;
+    unsigned char  common_flags;
+    unsigned char  common_preempt_count;
+    int common_pid;
 
-    __s32 __syscall_nr;
-    __u32 __pad;
+    int __syscall_nr;
+    int __pad;
     
-    __u64 dfd;
+    unsigned long long dfd;
     const char *filename;
-    __u64 flags;
-    __u64 mode;
+    unsigned long long flags;
+    unsigned long long mode;
 };
 
-// syscall open logger
+// syscall openat logger
 SEC("tracepoint/syscalls/sys_enter_openat")
 int handle_open(const struct trace_event_raw_sys_enter_openat *ctx){
 	struct event *e;
@@ -45,7 +134,8 @@ int handle_open(const struct trace_event_raw_sys_enter_openat *ctx){
     if (!e){
 		return 0;
 	}
-	
+
+	e->timestamp = bpf_ktime_get_ns();	
 	//ignore ppid for this syscall
 	e->ppid = 0;	
 	e->call = OPENAT;	
@@ -54,12 +144,8 @@ int handle_open(const struct trace_event_raw_sys_enter_openat *ctx){
 	e->argc = 1;
 	e->argv[0][0] = 'X';
 
-	//debug    
-	bpf_printk("OPENAT HOOKED!\n");
-    
-	
-	
-    bpf_ringbuf_submit(e, 0);
+    //bpf_ringbuf_submit(e, 0);
+	bpf_ringbuf_discard(e, 0);
 	return 0;
 }
 
@@ -112,7 +198,8 @@ int handle_execve(const struct trace_event_raw_sys_enter_execve *ctx) {
 
     e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
     if (!e) return 0;
-	
+		
+	e->timestamp = bpf_ktime_get_ns();	
 	e->call = EXECVE;
     e->pid = bpf_get_current_pid_tgid() >> 32;
     //BPF_CORE_READ_INTO(&e->syscall_nr, ctx, __syscall_nr);

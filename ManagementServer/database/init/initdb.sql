@@ -10,7 +10,7 @@ CREATE TABLE endpoints (
 CREATE TABLE events (
     event_id SERIAL PRIMARY KEY,
     endpoint_id INT,
-    event_time TIMESTAMP NOT NULL,
+    event_time INT NOT NULL,
     message TEXT NOT NULL,
     event_type VARCHAR(16),
     pid INT

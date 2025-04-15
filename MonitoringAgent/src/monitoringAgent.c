@@ -19,9 +19,6 @@
 #include "monitoringAgent.skel.h"
 #include "common_data.h"
 
-// number of events to collect before sending
-#define BATCH_SIZE 16
-
 // path of config file
 #define CONFIG_PATH "/etc/monitoringAgent.conf"
 
@@ -39,7 +36,7 @@ int event_count = 0;
 // Global config options, read from config file
 struct config{
 	char api[256];   // api endpoint
-	char key[256];   // api key
+	char key[128];   // api key
 	char name[64];   // endpoint name
 	char id[64];     // endpoint id
 	int buffer_size; // max size of event buffer, the max number of events sent in each API call
@@ -160,6 +157,20 @@ int load_config(){
 	return 0;
 }
 
+// helper function to convert nanoseconds since boot to Unix timestamp
+time_t convert_ns_to_unix(uint64_t nanoseconds_since_boot) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    uint64_t current_unix_nanoseconds = (uint64_t)ts.tv_sec * 1000000000ULL + (uint64_t)ts.tv_nsec;
+    
+    // Subtract the boot time nanoseconds from the current time nanoseconds
+    uint64_t unix_nanoseconds = current_unix_nanoseconds - nanoseconds_since_boot;
+
+    // Convert back to time_t (seconds)
+    time_t unix_seconds = (time_t)(unix_nanoseconds / 1000000000ULL);
+    return unix_seconds;
+}
+
 // Function to submit events to the API
 int submit_events(struct event *events, int count) {
     CURL *curl;
@@ -185,6 +196,7 @@ int submit_events(struct event *events, int count) {
         cJSON *event = cJSON_CreateObject();
 
         // Add fields to the event object
+        cJSON_AddNumberToObject(event, "timestamp", convert_ns_to_unix(events[i].timestamp));
         cJSON_AddNumberToObject(event, "type", events[i].call);
         cJSON_AddNumberToObject(event, "pid", events[i].pid);
         cJSON_AddNumberToObject(event, "ppid", events[i].ppid);
@@ -202,13 +214,17 @@ int submit_events(struct event *events, int count) {
         cJSON_AddItemToArray(events_array, event);
     }
 
+	// add the id to the root
+	cJSON_AddStringToObject(root, "id", config.id);
+
     // Add the "events" array to the root object
     cJSON_AddItemToObject(root, "events", events_array);
 
     // Convert the root object to a string
     char *post_data = cJSON_PrintUnformatted(root);
-    
-    // Print the result
+   
+
+    //debug
     printf("%s\n", post_data);
 
     // Set up the curl options
@@ -216,16 +232,23 @@ int submit_events(struct event *events, int count) {
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data);
 	
 	// Set the Content-Type header to application/json
-    struct curl_slist *headers = NULL;
-    headers = curl_slist_append(headers, "Content-Type: application/json");
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);	
+	struct curl_slist *headers = NULL;
+	headers = curl_slist_append(headers, "Content-Type: application/json");
+	
+	// Add the API key
+	char auth_header[256];
+	snprintf(auth_header, sizeof(auth_header), "Authorization: Bearer %s", config.key);
+	headers = curl_slist_append(headers, auth_header);
+	
+	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
 
     // Perform the request
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
         fprintf(stderr, "Curl request failed: %s\n", curl_easy_strerror(res));
         curl_easy_cleanup(curl);
-        return -1;
+        return 0;
     }
 
     curl_easy_cleanup(curl);
@@ -234,11 +257,6 @@ int submit_events(struct event *events, int count) {
 
 // Event handler function called by BPF ring buffer
 static int handle_event(void *ctx, void *data, size_t len) {
-    //pthread_mutex_lock(&buffer_lock); 
-	
-	//debug
-	//printf("Got New Event\n");
-
     struct event *e = (struct event*) data;
     // Add event to buffer
     if (event_count > config.buffer_size){
@@ -250,40 +268,11 @@ static int handle_event(void *ctx, void *data, size_t len) {
     if (event_count >= config.batch_size) {
         if (submit_events(event_buffer, event_count) == 0) {
             // Reset buffer after successful submission
-            event_count = 0;
+            // drops logs in buffer if API call fails
+			event_count = 0;
         }
     }
-
-    //pthread_mutex_unlock(&buffer_lock);  // Unlock the buffer
     return 0;
-}
-
-
-// print data to stdout
-// called by ringbuffer
-//static int handle_event(void *ctx, void *data, size_t len) {
-//    struct event *e = data;
-//    printf("PID %d called ", e->pid);
-//	if(e->call == EXECVE){
-//		printf("EXECVE\n");
-//	}
-//	else if(e->call == OPENAT){
-//		printf("OPENAT\n");
-//	}
-//	printf("  PPID: %d\n", e->ppid);
-//    printf("  filename: %s\n", e->filename);
-//    for (int i = 0; i < e->argc; i++) {
-//        printf("  argv[%d]: %s\n", i, e->argv[i]);
-//    }
-//    return 0;
-//}
-
-void* submit_thread(void* arg){
-	while(!exit_flag){
-		
-	}
-
-	return NULL;
 }
 
 int main() {
@@ -323,14 +312,7 @@ int main() {
         return 1;
     }
 
-	// create the submit logs thread
-	//pthread_t thread;
-	//if (pthread_create(&thread, NULL, submit_thread, NULL) != 0) {
-    //	perror("Failed to create submit thread");
-    //	return -1;
-	//}
-
-    printf("Tracing execve() calls. Ctrl+C to exit.\n");
+    printf("Tracing system calls.\n");
     while (!exit_flag) {
 
         err = ring_buffer__poll(rb, 1000);
