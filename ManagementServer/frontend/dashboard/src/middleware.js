@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  console.log('Middleware triggered for:', request.nextUrl.pathname);
+  const authToken = request.cookies.get('token');
+  const { pathname } = request.nextUrl;
 
-  const token = request.cookies.get('token')?.value;
+  // Allow access to login page, landing page, and API routes
+  if (pathname === '/login' || pathname === '/' || pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
 
-  if (
-    request.nextUrl.pathname.startsWith('/dashboard') &&
-    !token
-  ) {
-    console.log(' No token found. Redirecting to login.');
+  // Redirect to login if no auth token
+  if (!authToken) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  console.log('Token found or not a protected route. Proceeding.');
   return NextResponse.next();
 }
 

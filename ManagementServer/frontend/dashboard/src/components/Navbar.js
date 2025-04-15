@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
   useEffect(() => {
     // Check if user is logged in (you can modify this based on your auth implementation)
@@ -29,7 +30,11 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-lg font-bold">
-          <Link href="/">EndPoint Guard Inc.</Link>
+          {currentPath.includes('/dashboard') ? (
+            <span>EndPoint Guard Inc.</span>
+          ) : (
+            <Link href="/">EndPoint Guard Inc.</Link>
+          )}
         </div>
         <div className="flex items-center space-x-4">
           <ThemeToggleButton />
