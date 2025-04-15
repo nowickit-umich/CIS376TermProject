@@ -27,9 +27,8 @@ export async function POST(req) {
 
     const token = data.token;
 
-    // ✅ FIX: Use cookies() correctly
+    // Sync usage for route handler
     const cookieStore = cookies();
-
     cookieStore.set({
       name: 'token',
       value: token,
@@ -52,4 +51,5 @@ export async function POST(req) {
     );
   }
 }
+
 
