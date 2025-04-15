@@ -1,22 +1,18 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const authToken = request.cookies.get('token');
+  const token = request.cookies.get('token')?.value;
   const { pathname } = request.nextUrl;
 
-  // Allow access to login page, landing page, and API routes
-  if (pathname === '/login' || pathname === '/' || pathname.startsWith('/api/')) {
-    return NextResponse.next();
-  }
-
-  // Redirect to login if no auth token
-  if (!authToken) {
+  // Middleware only runs for /dashboard routes, but we still double check
+  if (!token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return NextResponse.next();
 }
 
+// Only run middleware for /dashboard and its subpaths
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard/:path*', '/dashboard'],
 };
