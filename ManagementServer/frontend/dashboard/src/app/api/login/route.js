@@ -27,7 +27,7 @@ export async function POST(req) {
 
     const token = data.token;
 
-    /Set the token as a secure cookie
+    //Set the token as a secure cookie
     cookies().set({
       name: 'token',
       value: token,
