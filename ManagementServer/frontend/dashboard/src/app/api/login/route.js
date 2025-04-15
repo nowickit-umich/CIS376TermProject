@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 export async function POST(req) {
   try {
@@ -27,9 +26,13 @@ export async function POST(req) {
 
     const token = data.token;
 
-    // Sync usage for route handler
-    const cookieStore = cookies();
-    cookieStore.set({
+    // Use NextResponse to set cookies on the response object
+    const res = NextResponse.json({
+      success: true,
+      requiresCredentialChange: data.requiresCredentialChange || false,
+    });
+
+    res.cookies.set({
       name: 'token',
       value: token,
       httpOnly: true,
@@ -39,10 +42,7 @@ export async function POST(req) {
       sameSite: 'lax',
     });
 
-    return NextResponse.json({
-      success: true,
-      requiresCredentialChange: data.requiresCredentialChange || false,
-    });
+    return res;
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
