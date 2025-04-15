@@ -1,10 +1,30 @@
 FROM node:18
 WORKDIR /app
-COPY dashboard/package.json .
-COPY dashboard/package-lock.json .
-COPY dashboard/*.json .
-COPY dashboard/*.mjs .
-COPY dashboard/public/ .
-RUN npm install  
-COPY dashboard/src/ ./src
-CMD ["npm", "run", "dev"]
+
+# Copy package files
+COPY dashboard/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy configuration files
+COPY dashboard/next.config.mjs ./
+COPY dashboard/jsconfig.json ./
+COPY dashboard/postcss.config.mjs ./
+COPY dashboard/tailwind.config.js ./
+
+# Copy source code
+COPY dashboard/src ./src
+COPY dashboard/public ./public
+
+# Set environment variables for hot reloading
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV CHOKIDAR_USEPOLLING=true
+ENV WATCHPACK_POLLING=true
+
+# Expose port
+EXPOSE 3000
+
+# Start development server with host binding
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
