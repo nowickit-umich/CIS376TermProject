@@ -26,7 +26,8 @@ export async function POST(req) {
     }
 
     const token = data.token;
-    
+
+    /Set the token as a secure cookie
     cookies().set({
       name: 'token',
       value: token,
@@ -37,20 +38,15 @@ export async function POST(req) {
       sameSite: 'lax',
     });
 
-    // Return any additional response data from backend
-    return NextResponse.json(
-      {
-        success: true,
-        requiresCredentialChange: data.requiresCredentialChange,
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      requiresCredentialChange: data.requiresCredentialChange || false,
+    });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'An error occurred during login' },
       { status: 500 }
     );
   }
 }
-
