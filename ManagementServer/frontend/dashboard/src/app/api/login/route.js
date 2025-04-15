@@ -19,13 +19,17 @@ export async function POST(req) {
     const data = await response.json();
 
     if (!response.ok) {
-      return NextResponse.json({ error: data.error || 'Login failed' }, { status: response.status });
+      return NextResponse.json(
+        { error: data.error || 'Login failed' },
+        { status: response.status }
+      );
     }
 
     const token = data.token;
-
-    // Set the cookie securely
-    cookies().set('token', token, {
+    
+    cookies().set({
+      name: 'token',
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
@@ -33,14 +37,20 @@ export async function POST(req) {
       sameSite: 'lax',
     });
 
-    // Forward the requiresCredentialChange field from the backend response
-    return NextResponse.json({ 
-      success: true,
-      requiresCredentialChange: data.requiresCredentialChange 
-    }, { status: 200 });
+    // Return any additional response data from backend
+    return NextResponse.json(
+      {
+        success: true,
+        requiresCredentialChange: data.requiresCredentialChange,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
 
