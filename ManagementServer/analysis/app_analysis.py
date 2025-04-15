@@ -9,7 +9,19 @@ db_config = {
     "database": os.getenv("DB_NAME")
 }
 
-# TODO
+def main():
+    # analysis runs every 15 seconds
+    while(True):
+        time.sleep(15)
+
+    return
+
+def baseline():
+    pass
+
+def alert_new_program(last_timestamp):
+    # search events for an execve of an unknown program
+    pass
 
 def test():
     connection = None
@@ -27,6 +39,7 @@ def test():
         if connection:
             connection.close()
 
-while(True):
-    time.sleep(5)
-    test()
+
+
+if __name__ == "__main__":
+    main()

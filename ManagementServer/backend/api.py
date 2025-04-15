@@ -24,7 +24,7 @@ def dbtest():
     try:
         connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM events;")
+            cursor.execute("SELECT * FROM alerts;")
             result = cursor.fetchall()
         return jsonify(result)
     except Exception as e:
@@ -147,31 +147,27 @@ def change_credentials():
 @app.route("/submit_logs", methods=['POST'])
 def submit_logs():
     data = request.get_json()
-    print(data, flush=True)
-    #return jsonify({"response": "ok"}), 200
     endpoint_id = data['id']
-    for raw_event in data['logs']:
-        print(raw_event, flush=True)
-        #return jsonify({"response": "ok"}), 200
-        #parse event
-        for x in raw_event.split(' '):
-            syscall = re.search(r'syscall=([^\s]+)', x)
-            pid = re.search(r'pid=([^\s]+)', x)
-            uid = re.search(r'uid=([^\s]+)', x)
-            euid = re.search(r'euid=([^\s]+)', x)
-            timestamp = re.search(r'msg=audit\(([^:]+)', x)
 
-            #insert into database
-            try:
-                connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
-                with connection.cursor() as cursor:
-                    cursor.execute(f"INSERT INTO events (endpoint_id, event_time, message, event_type, pid) VALUES ( {endpoint_id}, {timestamp}, {x}, {syscall}, {pid} );")
-                    result = cursor.fetchall()
-                return jsonify(result)
-            except Exception as e:
-                return jsonify({"error": str(e)})
-            finally:
-                if connection:
-                    connection.close()
-    return
+    #debug
+    print("Endpoint: ", endpoint_id)
 
+    for event in data['events']:
+        for x in event:
+            #debug
+            print(x, event[x],  flush=True)
+
+        #insert into database
+        try:
+            connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                cursor.execute(f"INSERT INTO events (endpoint_id, event_time, message, event_type, pid) VALUES ( {endpoint_id}, {event['timestamp']}, 0, {event['type']}, {event['pid']} );")
+                result = cursor.fetchall()
+            return jsonify(result)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
+        finally:
+            if connection:
+                connection.close()
+        return jsonify({"message": "Submit Log Successful"}), 200
+    
