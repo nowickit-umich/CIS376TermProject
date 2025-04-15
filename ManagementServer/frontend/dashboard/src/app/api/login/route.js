@@ -27,14 +27,16 @@ export async function POST(req) {
 
     const token = data.token;
 
-    //Set the token as a secure cookie
-    cookies().set({
+    // ✅ FIX: Use cookies() correctly
+    const cookieStore = cookies();
+
+    cookieStore.set({
       name: 'token',
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24,
       sameSite: 'lax',
     });
 
@@ -50,3 +52,4 @@ export async function POST(req) {
     );
   }
 }
+
