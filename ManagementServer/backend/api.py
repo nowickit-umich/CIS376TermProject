@@ -170,4 +170,64 @@ def submit_logs():
             if connection:
                 connection.close()
         return jsonify({"message": "Submit Log Successful"}), 200
+
+@app.route("/alerts", methods=['GET', 'POST', 'PUT'])
+def manage_alerts():
+    if request.method == 'GET':
+        connection = None
+        try:
+            connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT a.*, ar.rule_name, ar.description 
+                    FROM alerts a
+                    LEFT JOIN alert_rules ar ON a.rule_id = ar.rule_id
+                    ORDER BY a.alert_timestamp DESC
+                """)
+                alerts = cursor.fetchall()
+            return jsonify(alerts)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        finally:
+            if connection:
+                connection.close()
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        connection = None
+        try:
+            connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO alerts (rule_id, severity, description)
+                    VALUES (%s, %s, %s)
+                """, (data.get('rule_id'), data.get('severity'), data.get('description')))
+                connection.commit()
+            return jsonify({"message": "Alert created successfully"}), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        finally:
+            if connection:
+                connection.close()
+
+    elif request.method == 'PUT':
+        data = request.get_json()
+        connection = None
+        try:
+            connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE alerts 
+                    SET acknowledged = %s,
+                        acknowledged_by = %s,
+                        acknowledged_at = CURRENT_TIMESTAMP
+                    WHERE alert_id = %s
+                """, (data.get('acknowledged'), data.get('acknowledged_by'), data.get('alertId')))
+                connection.commit()
+            return jsonify({"message": "Alert updated successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        finally:
+            if connection:
+                connection.close()
     
