@@ -7,6 +7,15 @@ This project consists of two main components: the Monitoring Agent and the Manag
 # Monitoring Agent Overview
 The Monitoring Agent currently supports Fedora-40 systems. This can be extended to any kernel version greater than 5.8 in the future. The monitoring agent can be easily managed via systemd. 
 
+Start/Stop/Status of the Monitoring Agent:
+
+> systemctl start monitoringAgent.service
+
+> systemctl stop monitoringAgent.service
+
+> systemctl status monitoringAgent.service
+ 
+
 Install:
 To install the monitoring agent simply run the install.sh script located in ./MonitoringAgent/install.sh
 
