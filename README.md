@@ -14,12 +14,14 @@ Start/Stop/Status of the Monitoring Agent:
 > systemctl stop monitoringAgent.service
 
 > systemctl status monitoringAgent.service
- 
+
 
 Install:
 To install the monitoring agent simply run the install.sh script located in `./MonitoringAgent/install.sh`
 
 Note: the install script must be run as root
+
+Configuration: The Monitoring Agent reads configuration settings from `/etc/monitoringAgent.conf`
 
 Network: Requires outgoing network access on port `5001`
 
