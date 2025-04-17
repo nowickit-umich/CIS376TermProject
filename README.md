@@ -3,7 +3,7 @@
 This project consists of two main components: the Monitoring Agent and the Management Server. The Monitoring Agent is installed on the devices you want to monitor. The Management server is installed on your organizations network infrastructure. Both Cloud and On-Premise servers are supported. 
 
 # Monitoring Agent Overview
-The Monitoring Agent currently supports Fedora-40 systems. This can be extended to any kernel version greater than 5.8 in the future. The monitoring agent can be easily managed via systemd. 
+The Monitoring Agent currently supports Fedora-40 systems. This can easily be extended to any linux kernel version greater than 5.8 in the future. The monitoring agent can be easily managed via systemd. 
 
 ### Install:
 To install the monitoring agent simply run the install.sh script located in `./MonitoringAgent/install.sh`
@@ -12,6 +12,7 @@ Note: the install script must be run as root
 
 ### Configuration: 
 The Monitoring Agent reads configuration settings from `/etc/monitoringAgent.conf`
+The  configuration file is generated when an endpoint is added and can be downloaded from within the endpoint management dashboard. It is not necessary to modify the defualt configuration.
 
 There are 6 required configuration options that must be defined:
 > `api=http://<server address\>:5001/submit_logs`
