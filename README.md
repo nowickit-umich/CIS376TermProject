@@ -14,17 +14,28 @@ Note: the install script must be run as root
 The Monitoring Agent reads configuration settings from `/etc/monitoringAgent.conf`
 
 There are 6 required configuration options that must be defined:
-> api=http://<server address\>:5001/submit_logs
+> `api=http://<server address\>:5001/submit_logs`
+
 The `api` key must be set to the backend submit logs api
+
 > key=<authentication key\>
+
 The `key` must be set to the authentication key generated when the endpoint was added in the dashboard
+
 > name=<name\>
+
 `name` may be set to any string.
+
 > id=<endpoint id\>
+
 The `id` must be set to the id associated with the authentication key.
+
 > buffer_size=<int\>
+
 The `buffer_size` is used internally. The configuration option is not currently implemented, leave this value at 100.
+
 > batch_size=<int\>
+
 The `batch_size` defines the number of logs sent in a single submission. Smaller values will improve the response time at the cost of more api calls.
 
 Configuration Format: All options must be defined. There must not be spaces around the '=' character. Comments can be included in the configuration file by starting a line with the '#' character.
