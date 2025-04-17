@@ -17,20 +17,20 @@ Start/Stop/Status of the Monitoring Agent:
  
 
 Install:
-To install the monitoring agent simply run the install.sh script located in ./MonitoringAgent/install.sh
+To install the monitoring agent simply run the install.sh script located in `./MonitoringAgent/install.sh`
 
 Note: the install script must be run as root
 
-
+Network: Requires outgoing network access on port `5001`
 
 # Management Server Overview
 The Management server consists of a set of docker containers managed by docker-compose. The server can be installed on any system with docker and docker compose installed. An install script is included for Fedora-40 systems. 
 
-Install Dependencies:
-
+Install Dependencies (Fedora-40 only):
+Run the install script located in `./ManagementServer/install.sh`
 
 Start Server:
 docker compose up --build
 
-
+Network: Requires full access on ports `3000` and `5001`
 
