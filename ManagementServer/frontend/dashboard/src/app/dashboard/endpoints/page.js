@@ -8,17 +8,46 @@ export default function EndpointsPage() {
   const [endpointName, setEndpointName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      // TODO: Implement endpoint creation and file download
-      console.log('Creating endpoint:', endpointName);
+      const response = await fetch('/api/create-endpoint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: endpointName }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create endpoint');
+      }
+
+      // Create and download the config file
+      const blob = new Blob([data.config_content], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      // Use the endpoint name for the filename, replacing spaces with underscores
+      const safeName = endpointName.replace(/\s+/g, '_');
+      a.download = `${safeName}_Endpoint.conf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      setSuccess('Endpoint created successfully!');
+      setEndpointName('');
     } catch (err) {
-      setError('Failed to create endpoint. Please try again.');
+      setError(err.message || 'Failed to create endpoint. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -62,6 +91,12 @@ export default function EndpointsPage() {
               {error && (
                 <div className="text-red-500 text-sm">
                   {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="text-green-500 text-sm">
+                  {success}
                 </div>
               )}
 
