@@ -3,7 +3,6 @@ import pymysql
 import re
 import secrets
 import os
-
 app = Flask(__name__)
 
 # In-memory user storage
@@ -206,7 +205,7 @@ key={auth_key}
 name={endpoint_name}
 id={new_id}
 buffer_size=65
-batch_size=90
+batch_size=25
 """
             
             return jsonify({
