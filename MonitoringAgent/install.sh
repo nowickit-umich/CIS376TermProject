@@ -42,6 +42,7 @@ fi
 # install
 echo " + Installing..."
 cp $SCRIPT_DIR/src/monitoringAgent /usr/bin/monitoringAgent
+cp $SCRIPT_DIR/src/monitoringAgent.conf /etc/monitoringAgent.conf
 status1=$?
 chmod 700 /usr/bin/monitoringAgent
 if [ $? -ne 0 ] || [ $status1 -ne 0 ]; then 
