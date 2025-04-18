@@ -193,8 +193,8 @@ def create_endpoint():
             
             # Insert new endpoint
             cursor.execute(
-                "INSERT INTO endpoints (endpoint_id, authkey, hostname, ip_address, Name) VALUES (%s, %s, %s, %s, %s)",
-                (new_id, auth_key, 'localhost', '127.0.0.1', endpoint_name)
+                "INSERT INTO endpoints (endpoint_id, authkey, Name) VALUES (%s, %s, %s)",
+                (new_id, auth_key, endpoint_name)
             )
             connection.commit()
             
@@ -215,6 +215,38 @@ batch_size=90
                 "config_content": config_content
             }), 201
             
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+@app.route("/get-endpoints", methods=['GET'])
+def get_endpoints():
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT endpoint_id, Name, hostname, ip_address FROM endpoints")
+            endpoints = cursor.fetchall()
+            return jsonify(endpoints)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+@app.route("/get-endpoint/<int:endpoint_id>", methods=['GET'])
+def get_endpoint(endpoint_id):
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT endpoint_id, Name, authkey FROM endpoints WHERE endpoint_id = %s", (endpoint_id,))
+            endpoint = cursor.fetchone()
+            if not endpoint:
+                return jsonify({"error": "Endpoint not found"}), 404
+            return jsonify(endpoint)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
