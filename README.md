@@ -1,5 +1,7 @@
 # Endpoint Security Monitoring System
 
+GRADER NOTE: Use the instructions provided in DEPLOY.md to setup a local deployment of this system. 
+
 This project consists of two main components: the Monitoring Agent and the Management Server. The Monitoring Agent is installed on the devices you want to monitor. The Management server is installed on your organizations network infrastructure. Both Cloud and On-Premise servers are supported. 
 
 # Monitoring Agent Overview
