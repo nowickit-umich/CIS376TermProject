@@ -1,6 +1,6 @@
 
 CREATE TABLE endpoints (
-    endpoint_id INT PRIMARY KEY,
+    endpoint_id INT AUTO_INCREMENT PRIMARY KEY,
     authkey VARCHAR(255) NOT NULL,
     hostname VARCHAR(255) NOT NULL,
     ip_address VARCHAR(45) NOT NULL,

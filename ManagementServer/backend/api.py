@@ -24,7 +24,7 @@ def dbtest():
     try:
         connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM alerts;")
+            cursor.execute("SELECT * FROM events;")
             result = cursor.fetchall()
         return jsonify(result)
     except Exception as e:
@@ -152,22 +152,30 @@ def submit_logs():
     #debug
     print("Endpoint: ", endpoint_id)
 
+    print(data)
+
     for event in data['events']:
-        for x in event:
-            #debug
-            print(x, event[x],  flush=True)
+        #for x in event:
+        #debug
+        #print(x, event[x],  flush=True)
+
+        print(event['filename'])
 
         #insert into database
         try:
             connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
-            with connection.cursor() as cursor:
-                cursor.execute(f"INSERT INTO events (endpoint_id, event_time, message, event_type, pid) VALUES ( {endpoint_id}, {event['timestamp']}, 0, {event['type']}, {event['pid']} );")
-                result = cursor.fetchall()
-            return jsonify(result)
+            cursor = connection.cursor()
+            cursor.execute(f"INSERT INTO events (endpoint_id, event_time, message, event_type, pid) VALUES ( {endpoint_id}, {event['timestamp']}, \"{event['filename']}\",{event['type']}, {event['pid']} );")
+            result = connection.commit()
         except Exception as e:
+            print("Failed to write to DB: ", str(e))
             return jsonify({"error": str(e)}), 400
         finally:
+            print("Close DB")
             if connection:
                 connection.close()
-        return jsonify({"message": "Submit Log Successful"}), 200
     
+    return jsonify({"message": "Submit Log Successful"}), 200
+    
+
+
