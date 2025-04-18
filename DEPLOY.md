@@ -35,12 +35,12 @@ You will be prompted to change you credentials. Enter any values and complete th
 
 8. Navigate to the dashboard page, and select add Endpoint from the sidebar.
 
-9. Enter any name and click the "Add Endpoint button" and download the agent configuration file
+9. Enter any name and click the "Add Endpoint button" and **download the agent configuration file**
 
 
 ### Monitoring Agent Setup
 
-Once the fedora Linux virtual machine is running, *switch to the root user* and install git with the following commands:
+Once the fedora Linux virtual machine is running, **switch to the root user** and install git with the following commands:
 
 `dnf install git -y`
 
@@ -52,7 +52,7 @@ Once the fedora Linux virtual machine is running, *switch to the root user* and 
 
 `cd ./CIS376TermProject/MonitoringAgent/`
 
-3. Copy the agent configuration file which was previously downloaded to the `src` directory
+3. Copy the agent configuration file which was previously downloaded in step 9 of the "Management Server Setup" to the `src` directory
 
 4. Install the Monitoring Agent:
 
