@@ -16,6 +16,8 @@ Note: the install script must be run as root
 The Monitoring Agent reads configuration settings from `/etc/monitoringAgent.conf`
 The  configuration file is generated when an endpoint is added and can be downloaded from within the endpoint management dashboard. It is not necessary to modify the defualt configuration.
 
+It is intended that the "Add Endpoint" feature of the deashboard is used to generate the agent configuration file. The options listed below are only for advanced usage.  
+
 There are 6 required configuration options that must be defined:
 > `api=http://<server address\>:5001/submit_logs`
 
