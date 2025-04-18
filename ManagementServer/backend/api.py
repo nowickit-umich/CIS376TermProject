@@ -220,4 +220,19 @@ batch_size=25
     finally:
         if connection:
             connection.close()
+
+@app.route("/get-endpoints-count", methods=['GET'])
+def get_endpoints_count():
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) as count FROM endpoints")
+            result = cursor.fetchone()
+            return jsonify({"count": result['count']}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
     
