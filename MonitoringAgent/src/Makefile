@@ -3,7 +3,7 @@ BPF_CFLAGS=-g -O2 -target bpf
 GCC=gcc
 CFLAGS=-g -O2
 
-all: monitoringAgent agent_gui
+all: monitoringAgent
 
 agent_gui: agent_gui.c
 	gcc agent_gui.c -o agent_gui `pkg-config --cflags --libs gtk4`
