@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import pymysql
 import re
+import secrets
 
 app = Flask(__name__)
 
@@ -170,4 +171,53 @@ def submit_logs():
             if connection:
                 connection.close()
         return jsonify({"message": "Submit Log Successful"}), 200
+
+@app.route("/create-endpoint", methods=['POST'])
+def create_endpoint():
+    data = request.get_json()
+    endpoint_name = data.get('name')
+    
+    if not endpoint_name:
+        return jsonify({"error": "Endpoint name is required"}), 400
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config, cursorclass=pymysql.cursors.DictCursor)
+        with connection.cursor() as cursor:
+            # Generate a unique endpoint ID
+            cursor.execute("SELECT COALESCE(MAX(endpoint_id), 0) + 1 as new_id FROM endpoints")
+            new_id = cursor.fetchone()['new_id']
+            
+            # Generate a random auth key
+            auth_key = secrets.token_urlsafe(32)
+            
+            # Insert new endpoint
+            cursor.execute(
+                "INSERT INTO endpoints (endpoint_id, authkey, hostname, ip_address, Name) VALUES (%s, %s, %s, %s, %s)",
+                (new_id, auth_key, 'localhost', '127.0.0.1', endpoint_name)
+            )
+            connection.commit()
+            
+            # Generate config file content
+            config_content = f"""# Endpoint Configuration File
+api=http://localhost:5001/submit_logs
+key={auth_key}
+name={endpoint_name}
+id={new_id}
+buffer_size=65
+batch_size=90
+"""
+            
+            return jsonify({
+                "success": True,
+                "endpoint_id": new_id,
+                "auth_key": auth_key,
+                "config_content": config_content
+            }), 201
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
     
