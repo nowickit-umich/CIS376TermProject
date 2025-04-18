@@ -24,7 +24,7 @@ fi
 
 # install dependencies
 echo " + Installing Build Dependencies..."
-dnf install gcc libcurl-devel bpftool libbpf-devel -y 
+dnf install gcc libcurl-devel bpftool clang libbpf-devel -y 
 if [ $? -ne 0 ]; then 
 	echo " - Failed to Install Dependencies!"
 	exit -1
