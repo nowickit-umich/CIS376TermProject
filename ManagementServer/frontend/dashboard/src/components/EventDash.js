@@ -90,7 +90,7 @@ export default function EventDashboard() {
             ) : (
               events.map((event, index) => (
                 <div key={index} className="border-b py-2">
-                  <p className="font-semibold">{event.type || 'Unknown'} - {event.severity || 'N/A'}</p>
+                  <p className="font-semibold">Time:{event.event_time} - Endpoint:{event.endpoint_id} - PID:{event.pid} - Type:{event.event_type || 'Unknown'} - Message:{event.message || 'N/A'}</p>
                   <p className="text-sm text-gray-600">{event.message || 'No message'}</p>
                 </div>
               ))

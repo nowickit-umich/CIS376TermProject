@@ -7,4 +7,5 @@ COPY dashboard/*.mjs .
 COPY dashboard/public/ .
 RUN npm install  
 COPY dashboard/src/ ./src
-CMD ["npm", "run", "dev"]
+RUN npm run build
+CMD ["npm", "run", "start"]

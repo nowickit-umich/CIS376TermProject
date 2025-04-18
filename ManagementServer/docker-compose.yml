@@ -38,15 +38,15 @@ services:
       - database
 
   database:
-    image: mysql:8
+    build:
+      context: ./database
     environment:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
     volumes:
-      - db_data:/var/lib/mysql
-      - ./database/init:/docker-entrypoint-initdb.d 
+      - db_data:/var/lib/mysql 
     ports:
       - "${DB_PORT}:${DB_PORT}"
 
