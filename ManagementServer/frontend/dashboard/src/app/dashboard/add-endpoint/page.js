@@ -55,7 +55,7 @@ export default function AddEndpoint() {
                   disabled={isLoading}
                 />
                 <p className="mt-1 text-sm text-gray-500">
-                  Choose a descriptive name for your endpoint (e.g., "Office Computer" or "Server Room")
+                  Choose a descriptive name for your endpoint (e.g., Office Computer or Server Room)
                 </p>
               </div>
 
